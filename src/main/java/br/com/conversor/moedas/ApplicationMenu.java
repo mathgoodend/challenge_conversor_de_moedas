@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class ApplicationMenu {
-    private final String[] currencies = {"BRL", "USD", "EUR", "ARS", "COP", "CLP", "CNY", "JPY", "CAD", "THB"};
+    private final String[] currencies = {"BRL", "USD", "EUR", "ARS", "COP", "CLP", "CNY", "JPY", "CAD", "THB", "GBP"};
     private final String header = """
             ===============================================================
                 Seja bem-vindo ao conversor de moedas.
@@ -37,19 +37,15 @@ public class ApplicationMenu {
     }
 
     private int setOption(String option, Scanner input) {
-        try {
-            int numOption = Integer.parseInt(option);
+        int numOption = Integer.parseInt(option);
 
-            if (numOption > 0 && numOption <= this.items.length()) {
-                this.executeOption(numOption, input);
-            } else {
-                this.goodbye();
-            }
-
-            return numOption;
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+        if (numOption == 0) {
+            this.goodbye();
+        } else if (numOption > 0 && numOption <= this.currencies.length) {
+            this.executeOption(numOption, input);
         }
+
+        return numOption;
     }
 
     private void goodbye() {
@@ -77,7 +73,16 @@ public class ApplicationMenu {
         int exit = 1;
         while (exit != 0) {
             this.render();
-            exit = setOption(input.nextLine().replaceAll("\\D|\\s", ""), input);
+            boolean success = false;
+            while (!success) {
+                try {
+                    exit = setOption(input.nextLine().replaceAll("\\D|\\s", ""), input);
+                    success = true;
+                } catch (Exception e) {
+                    System.out.println("Erro: Houve um erro. Por favor, tente novamente");
+                }
+
+            }
         }
     }
 }
